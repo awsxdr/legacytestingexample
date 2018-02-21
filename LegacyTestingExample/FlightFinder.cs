@@ -5,7 +5,7 @@
 
     public class FlightFinder
     {
-        private readonly FlightTimeManager _flightTimeManager = new FlightTimeManager();
+        private readonly IFlightTimeManager _flightTimeManager = new FlightTimeManager();
 
         public bool CheckAlternatives { get; internal set; }
 
