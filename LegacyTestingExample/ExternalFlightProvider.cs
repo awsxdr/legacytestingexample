@@ -8,7 +8,10 @@
         public static Flight[] GetFlights(DateTime date)
         {
             MessageBox.Show(
-                $"The method {nameof(ExternalFlightProvider)}.{nameof(GetFlights)} has been called. This shouldn't happen during testing.");
+                $"The method {nameof(ExternalFlightProvider)}.{nameof(GetFlights)} has been called. This shouldn't happen during testing.",
+                "Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
 
             return new Flight[0];
         }
