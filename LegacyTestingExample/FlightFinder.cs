@@ -14,73 +14,94 @@
             var rf = new ResultsForm();
             string sErr = null;
 
+            // Make sure the airports aren't null
+            if (dep == null || dst == null)
+            {
+                sErr = "No departure or destination airport";
+            }
+
+            // Make sure out date is after return date
+            if (outDt >= backDt)
+            {
+                sErr = "Out date is before back date";
+            }
+
+            // Make sure out date isn't in the past
+            if (outDt <= DateTime.Now)
+            {
+                sErr = "Out date is in the past";
+            }
+
             // Set initial offsets
             int om = -1, bm = -1;
 
             bool gotIt = false;
             Flight of = null, bf = null;
 
-            do
+            if (sErr == null)
             {
-                Flight[] ofs, bfs;
+                do
+                {
+                    Flight[] ofs, bfs;
 
-                // If we're checking alternatives then we need to adjust the dates by the offsets.
-                // If we're not checking then we just ignore the offsets and carry on.
-                if (CheckAlternatives)
-                {
-                    ofs = _flightTimeManager.GetFlightsForDate(outDt.AddDays(om));
-                    bfs = _flightTimeManager.GetFlightsForDate(backDt.AddDays(bm));
-                }
-                else
-                {
-                    ofs = _flightTimeManager.GetFlightsForDate(outDt);
-                    bfs = _flightTimeManager.GetFlightsForDate(backDt);
-                }
-
-                // Loop through flights
-                for (int i = 0; i < ofs.Length; i++)
-                {
-                    for (int j = 0; j < bfs.Length; j++)
+                    // If we're checking alternatives then we need to adjust the dates by the offsets.
+                    // If we're not checking then we just ignore the offsets and carry on.
+                    if (CheckAlternatives)
                     {
-                        if (ofs[i].Airline == bfs[j].Airline)
+                        ofs = _flightTimeManager.GetFlightsForDate(outDt.AddDays(om));
+                        bfs = _flightTimeManager.GetFlightsForDate(backDt.AddDays(bm));
+                    }
+                    else
+                    {
+                        ofs = _flightTimeManager.GetFlightsForDate(outDt);
+                        bfs = _flightTimeManager.GetFlightsForDate(backDt);
+                    }
+
+                    // Loop through flights
+                    for (int i = 0; i < ofs.Length; i++)
+                    {
+                        for (int j = 0; j < bfs.Length; j++)
                         {
-                            of = ofs[i];
-                            bf = bfs[i];
-                            gotIt = true;
-                            goto gotIt;
+                            if (ofs[i].Airline == bfs[j].Airline)
+                            {
+                                of = ofs[i];
+                                bf = bfs[i];
+                                gotIt = true;
+                                goto gotIt;
+                            }
                         }
                     }
-                }
 
-                ++om;
-                if (om > 1)
+                    ++om;
+                    if (om > 1)
+                    {
+                        om = -1;
+                        ++bm;
+                    }
+
+                } while (CheckAlternatives && bm <= 1);
+
+                if (!gotIt)
                 {
-                    om = -1;
-                    ++bm;
+                    sErr = "Could not find a flight";
+                    goto cleanUpAndExit;
                 }
 
-            } while (CheckAlternatives && bm <= 1);
+                gotIt:
+                try
+                {
+                    of.ReserveFlight();
+                    bf.ReserveFlight();
+                }
+                catch
+                {
+                    sErr = "An exception occurred whilst reserving flights.";
+                }
 
-            if (!gotIt)
-            {
-                sErr = "Could not find a flight";
-                goto cleanUpAndExit;
+                rf.Show();
             }
 
-gotIt:
-            try
-            {
-                of.ReserveFlight();
-                bf.ReserveFlight();
-            }
-            catch
-            {
-                sErr = "An exception occurred whilst reserving flights.";
-            }
-            
-            rf.Show();
-
-cleanUpAndExit:
+            cleanUpAndExit:
 
             if (sErr != null)
             {
