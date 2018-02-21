@@ -49,6 +49,7 @@
             this.Controls.Add(this.label1);
             this.Name = "ResultsForm";
             this.Text = "ResultsForm";
+            this.Load += new System.EventHandler(this.ResultsForm_Load);
             this.ResumeLayout(false);
 
         }
