@@ -2,7 +2,7 @@
 {
     using System.Windows.Forms;
 
-    public class DatabaseConnection
+    public class DatabaseConnection : IDatabaseConnection
     {
         public void ReserveFlight(Flight flight)
         {
