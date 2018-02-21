@@ -58,6 +58,7 @@
     <Compile Include="ResultsForm.Designer.cs">
       <DependentUpon>ResultsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ResultsPresenter.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ResultsForm.resx">

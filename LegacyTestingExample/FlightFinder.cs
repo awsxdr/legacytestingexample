@@ -11,7 +11,7 @@
 
         public bool FindFlights(Airport dep, Airport dst, DateTime outDt, DateTime backDt)
         {
-            var rf = new ResultsForm();
+            var rp = new ResultsPresenter();
             string sErr = null;
 
             // Make sure the airports aren't null
@@ -98,7 +98,7 @@ gotIt:
                     sErr = "An exception occurred whilst reserving flights.";
                 }
 
-                rf.ShowResults(of, bf);
+                rp.ShowResults(of, bf);
             }
 
 cleanUpAndExit:

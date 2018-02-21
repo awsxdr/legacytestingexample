@@ -17,10 +17,5 @@ namespace LegacyTestingExample
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
-
-        public void ShowResults(Flight of, Flight bf)
-        {
-            this.Show();
-        }
     }
 }
