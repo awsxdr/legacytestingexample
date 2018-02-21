@@ -87,7 +87,7 @@
                     goto cleanUpAndExit;
                 }
 
-                gotIt:
+gotIt:
                 try
                 {
                     of.ReserveFlight();
@@ -98,10 +98,10 @@
                     sErr = "An exception occurred whilst reserving flights.";
                 }
 
-                rf.Show();
+                rf.ShowResults(of, bf);
             }
 
-            cleanUpAndExit:
+cleanUpAndExit:
 
             if (sErr != null)
             {
