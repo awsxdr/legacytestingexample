@@ -1,7 +1,5 @@
 ﻿namespace LegacyTestingExample
 {
-    using System.Windows.Forms;
-
     public class Flight
     {
         public Airport Start { get; set; }
