@@ -83,7 +83,10 @@ gotIt:
 cleanUpAndExit:
 
             if (sErr != null)
+            {
                 MessageBox.Show("There was an error! This message shouldn't be displayed while testing");
+                return false;
+            }
 
             return true;
         }
