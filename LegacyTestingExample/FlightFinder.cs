@@ -7,7 +7,7 @@
     {
         private readonly FlightTimeManager _flightTimeManager = new FlightTimeManager();
 
-        public bool CheckAlternatives { get; set; }
+        public bool CheckAlternatives { get; internal set; }
 
         public bool FindFlights(Airport dep, Airport dst, DateTime outDt, DateTime backDt)
         {
