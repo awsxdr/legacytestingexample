@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Airport.cs" />
     <Compile Include="DatabaseConnection.cs" />
+    <Compile Include="ExternalFlightProvider.cs" />
     <Compile Include="Flight.cs" />
     <Compile Include="FlightFinder.cs" />
     <Compile Include="FlightTimeManager.cs" />
