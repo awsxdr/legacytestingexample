@@ -87,13 +87,12 @@
         {
             var classUnderTest = new FlightFinder();
 
-            var flightTimeManagerMock = new Mock<IFlightTimeManager>();
+            var flightTimeManagerMock = new MockFlightTimeManager();
 
-            flightTimeManagerMock
-                .Setup(m => m.GetFlightsForDate(It.IsAny<DateTime>()))
-                .Returns(new[] {new Flight {Airline = "TST"}});
+            flightTimeManagerMock.GetFlightsForDateMethod =
+                _ => new[] {new Flight {Airline = "TST"}};
 
-            ReflectionHelper.SetPrivateField("_flightTimeManager", classUnderTest, flightTimeManagerMock.Object);
+            ReflectionHelper.SetPrivateField("_flightTimeManager", classUnderTest, flightTimeManagerMock);
 
             var databaseConnectionMock = new Mock<IDatabaseConnection>();
 
@@ -109,13 +108,12 @@
         {
             var classUnderTest = new FlightFinder();
 
-            var flightTimeManagerMock = new Mock<IFlightTimeManager>();
+            var flightTimeManagerMock = new MockFlightTimeManager();
 
-            flightTimeManagerMock
-                .Setup(m => m.GetFlightsForDate(It.IsAny<DateTime>()))
-                .Returns(new[] { new Flight { Airline = "TST" } });
+            flightTimeManagerMock.GetFlightsForDateMethod =
+                _ => new[] { new Flight { Airline = "TST" } };
 
-            ReflectionHelper.SetPrivateField("_flightTimeManager", classUnderTest, flightTimeManagerMock.Object);
+            ReflectionHelper.SetPrivateField("_flightTimeManager", classUnderTest, flightTimeManagerMock);
 
             var databaseConnectionMock = new Mock<IDatabaseConnection>();
 
@@ -133,13 +131,12 @@
         {
             var classUnderTest = new FlightFinder();
 
-            var flightTimeManagerMock = new Mock<IFlightTimeManager>();
+            var flightTimeManagerMock = new MockFlightTimeManager();
 
-            flightTimeManagerMock
-                .Setup(m => m.GetFlightsForDate(It.IsAny<DateTime>()))
-                .Returns(() => new[] { new Flight { Airline = Guid.NewGuid().ToString() } });
+            flightTimeManagerMock.GetFlightsForDateMethod =
+                _ => new[] { new Flight { Airline = Guid.NewGuid().ToString() } };
 
-            ReflectionHelper.SetPrivateField("_flightTimeManager", classUnderTest, flightTimeManagerMock.Object);
+            ReflectionHelper.SetPrivateField("_flightTimeManager", classUnderTest, flightTimeManagerMock);
 
             var result = classUnderTest.FindFlights(new Airport(), new Airport(), DateTime.Now.AddDays(7), DateTime.Now.AddDays(14));
 
@@ -152,13 +149,12 @@
         {
             var classUnderTest = new FlightFinder();
 
-            var flightTimeManagerMock = new Mock<IFlightTimeManager>();
+            var flightTimeManagerMock = new MockFlightTimeManager();
 
-            flightTimeManagerMock
-                .Setup(m => m.GetFlightsForDate(It.IsAny<DateTime>()))
-                .Returns(new[] { new Flight { Airline = "TST" } });
+            flightTimeManagerMock.GetFlightsForDateMethod =
+                _ => new[] { new Flight { Airline = "TST" } };
 
-            ReflectionHelper.SetPrivateField("_flightTimeManager", classUnderTest, flightTimeManagerMock.Object);
+            ReflectionHelper.SetPrivateField("_flightTimeManager", classUnderTest, flightTimeManagerMock);
 
             var databaseConnectionMock = new Mock<IDatabaseConnection>();
 
@@ -179,24 +175,32 @@
         {
             var classUnderTest = new FlightFinder();
 
-            var flightTimeManagerMock = new Mock<IFlightTimeManager>();
+            var flightTimeManagerMock = new MockFlightTimeManager();
 
-            flightTimeManagerMock
-                .Setup(m => m.GetFlightsForDate(It.IsAny<DateTime>()))
-                .Returns(() => new[] { new Flight { Airline = Guid.NewGuid().ToString() } });
+            flightTimeManagerMock.GetFlightsForDateMethod =
+                _ => new[] { new Flight { Airline = Guid.NewGuid().ToString() } };
 
-            ReflectionHelper.SetPrivateField("_flightTimeManager", classUnderTest, flightTimeManagerMock.Object);
+            ReflectionHelper.SetPrivateField("_flightTimeManager", classUnderTest, flightTimeManagerMock);
 
             ReflectionHelper.InvokePrivateMethod("set_CheckAlternatives", classUnderTest, true);
 
             var result = classUnderTest.FindFlights(new Airport(), new Airport(), DateTime.Now.AddDays(7), DateTime.Now.AddDays(14));
 
-            flightTimeManagerMock.Verify(
-                    m => m.GetFlightsForDate(It.IsAny<DateTime>()),
-                    Times.Exactly(2 * 3 * 3));
-
+            Assert.AreEqual(2 * 3 * 3, flightTimeManagerMock.CallCount);
             Assert.AreEqual(1, MockMethods.GetCallCount("MessageBoxShow"));
             Assert.IsFalse(result);
+        }
+
+        private class MockFlightTimeManager : FlightTimeManager
+        {
+            public Func<DateTime, Flight[]> GetFlightsForDateMethod { get; set; }
+            public int CallCount { get; set; } = 0;
+
+            public override Flight[] GetFlightsForDate(DateTime date)
+            {
+                ++CallCount;
+                return GetFlightsForDateMethod(date);
+            }
         }
 
         private class MockMethods

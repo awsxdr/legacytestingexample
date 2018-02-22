@@ -5,7 +5,7 @@
 
     public class FlightTimeManager
     {
-        public Flight[] GetFlightsForDate(DateTime date)
+        public virtual Flight[] GetFlightsForDate(DateTime date)
         {
             MessageBox.Show(
                 $"The method {nameof(FlightTimeManager)}.{nameof(GetFlightsForDate)} has been called. This shouldn't happen during testing.",
