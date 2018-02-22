@@ -3,7 +3,7 @@
     using System;
     using System.Windows.Forms;
 
-    public class FlightTimeManager : IFlightTimeManager
+    public class FlightTimeManager
     {
         public Flight[] GetFlightsForDate(DateTime date)
         {
